@@ -1,4 +1,10 @@
-langage: nodejs
+language: node_js
+
+node_js:
+  - stable
+
+install:
+  - npm install
 
 script:
-  - npm run test
+  - npm test
