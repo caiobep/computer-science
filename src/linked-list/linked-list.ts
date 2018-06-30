@@ -1,50 +1,52 @@
+import { Comparator } from '../utils/comparator/comparator'
 import LinkedListNode from './linked-list-node'
 
 export class LinkedList {
-  private head: LinkedListNode | null
+  /** The fist last element inserted on the list */
+  head: LinkedListNode | null
+  /** The fist element inserted on the list */
+  tail: LinkedListNode | null
 
-  constructor(item?: LinkedListNode) {
-    this.head = (!!item) ? new LinkedListNode(item) : null
+  /** Comparator function */
+  private compare: Comparator
+
+  constructor(comparatorFunction?: (a:any, b:any) => number ) {
+    this.head = null
+    this.tail = null
+
+    this.compare = new Comparator(comparatorFunction)
   }
 
   /**
    * Adds the element at the end of the linked list
-   * @param element The element to be added
+   * @param value The element to be added
    */
-  append(element: any): void {
-    if (!!this.head) {
-      let currentItem = this.head
-      const newItem = new LinkedListNode(element)
+  append(value: any): void {
+    const newNode  = new LinkedListNode(value)
 
-      if (!currentItem) {
-        this.head = newItem
-      } else {
+    if(!this.head) {
+      this.head = newNode
+      this.tail = newNode
+      return
+    }
 
-        /* Find the last item and insert a new element after It */
-        while(true) {
-          if (currentItem.next) {
-            currentItem = currentItem.next
-          } else {
-            currentItem.next = newItem
-            break
-          }
-        }
-      }
-    } else {
-      this.initializeList(element)
+    if (!!this.tail) {
+      this.tail.next = newNode
+      this.tail = newNode
     }
   }
 
   /**
    * Adds a element at the begining of the list
-   * @param element The element to be inserted
+   * @param value The element to be inserted
    */
-  prepand(element: any): void {
-    const newItem = new LinkedListNode(element)
-    const oldHead = this.head
+  prepand(value: any): void {
+    const newNode  = new LinkedListNode(value, this.head)
+    this.head = newNode
 
-    this.head = newItem
-    newItem.next = oldHead
+    if (!this.tail) {
+      this.tail = newNode
+    }
   }
 
   /**
@@ -78,33 +80,53 @@ export class LinkedList {
 
   /**
    * Removes a element from list
-   * @param element Element to be removed from list
+   * @param value Element to be removed from list
    */
-  delete(element: any): void {
-    let currentItem = this.head
-
-    if (!currentItem) {
-        return
+  delete(value: any): LinkedListNode | null {
+    if (!this.head) {
+      return null
     }
 
-    if (currentItem.value === element) {
-        this.head = currentItem.next as LinkedListNode
-    } else {
-        let previousElement: LinkedListNode | null = null
+    let deletedNode = null
 
-        while (true) {
-            if (currentItem.value === element) {
-                if (!!previousElement) {
-                  previousElement.next = currentItem.next || null
-                }
-                break
-            } else {
-              if (!!currentItem && !!currentItem.next) {
-                  previousElement = currentItem
-                  currentItem = currentItem.next
-                }
-            }
+    while(this.head && this.compare.equal(this.head.value, value)) {
+      deletedNode = this.head
+      this.head = this.head.next
+    }
+
+    let currentNode = this.head
+
+    if (currentNode !== null) {
+      while(!!currentNode.next) {
+        if (this.compare.equal(currentNode.next.value, value)) {
+          deletedNode = currentNode.next
+          currentNode.next = currentNode.next.next
+        } else {
+          currentNode = currentNode.next
         }
+      }
+    }
+
+    if (this.tail && this.compare.equal(this.tail.value, value)) {
+      this.tail = currentNode
+    }
+
+    return deletedNode
+  }
+
+
+
+  find(value: any, callback: (a: any) => void) {
+    if (!this.head) {
+      return
+    }
+
+    const currentNode = this.head as LinkedListNode
+
+    while(!!currentNode) {
+      if (!!callback && callback(currentNode.value)) {
+        return currentNode
+       }
     }
   }
 

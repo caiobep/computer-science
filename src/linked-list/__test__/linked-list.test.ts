@@ -31,14 +31,10 @@ describe('Linked List', () => {
     linkedList.append(expectedArray[1])
     linkedList.append(expectedArray[2])
 
-    linkedList.delete(elementToBeRemoved)
-
+    const removedNode = linkedList.delete(elementToBeRemoved)
     const linkedListAsArray = linkedList.toArray()
 
-    const linkedListAsArrayContainsDeletedElement = linkedListAsArray
-      .includes(elementToBeRemoved) as boolean
-
-    expect(linkedListAsArrayContainsDeletedElement).to.be.equal(false)
+    expect(2).to.eql(elementToBeRemoved)
     expect(linkedListAsArray).to.eql([1,3])
   })
 
