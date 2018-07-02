@@ -114,19 +114,31 @@ export class LinkedList {
     return deletedNode
   }
 
-
-
+  /**
+   * Find a value inside a Linked List
+   * @param value The value query
+   * @param callback A Callback Function
+   */
   find(value: any, callback: (a: any) => void) {
     if (!this.head) {
       return
     }
 
-    const currentNode = this.head as LinkedListNode
+    let currentNode = this.head as LinkedListNode
 
     while(!!currentNode) {
       if (!!callback && callback(currentNode.value)) {
         return currentNode
-       }
+      }
+
+      if (!!value &&
+        this.compare.equal(currentNode.value, value) &&
+        !!currentNode.next
+      ) {
+        currentNode = currentNode.next
+      }
+
+      return null
     }
   }
 
