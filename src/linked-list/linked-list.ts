@@ -21,32 +21,35 @@ export class LinkedList {
    * Adds the element at the end of the linked list
    * @param value The element to be added
    */
-  append(value: any): void {
+  append(value: any): LinkedList {
     const newNode  = new LinkedListNode(value)
 
     if(!this.head) {
       this.head = newNode
       this.tail = newNode
-      return
+      return this
     }
 
     if (!!this.tail) {
       this.tail.next = newNode
       this.tail = newNode
     }
+    return this
   }
 
   /**
    * Adds a element at the begining of the list
    * @param value The element to be inserted
    */
-  prepand(value: any): void {
+  prepand(value: any): LinkedList {
     const newNode  = new LinkedListNode(value, this.head)
     this.head = newNode
 
     if (!this.tail) {
       this.tail = newNode
     }
+
+    return this
   }
 
   /**
@@ -116,30 +119,90 @@ export class LinkedList {
 
   /**
    * Find a value inside a Linked List
-   * @param value The value query
-   * @param callback A Callback Function
+   * @param valueOrCallback A value or Callback Function
    */
-  find(value: any, callback: (a: any) => void) {
+  find<T>(valueOrCallback: T): LinkedListNode | null {
     if (!this.head) {
-      return
+      return null
     }
 
-    let currentNode = this.head as LinkedListNode
+    let callback = null
+    let value = null
 
-    while(!!currentNode) {
-      if (!!callback && callback(currentNode.value)) {
+    if (valueOrCallback instanceof Function) {
+      callback = valueOrCallback
+    } else {
+      value = valueOrCallback
+    }
+
+    let currentNode = this.head
+    while (!!currentNode) {
+
+      if (!!callback && !!callback(currentNode.value)) {
         return currentNode
       }
 
-      if (!!value &&
-        this.compare.equal(currentNode.value, value) &&
-        !!currentNode.next
-      ) {
-        currentNode = currentNode.next
+      if (!!value && this.compare.equal(currentNode!.value, value)) {
+        return currentNode
       }
 
+      /* Stop Loop When no nodes are found */
+      if (!!currentNode.next) {
+        currentNode = currentNode.next
+      } else {
+        break
+      }
+    }
+
+    return null
+  }
+
+  /**
+   * Delets the fist element inserted on the Linked List
+   */
+  deleteHead(): LinkedListNode|null {
+    if (!this.head) {
       return null
     }
+
+    const deletedHead = this.head
+
+    if (this.head.next) {
+      this.head = this.head.next
+    } else {
+      this.head = null
+      this.tail = null
+    }
+
+    return deletedHead
+  }
+
+  /**
+   * Deletes the last element inserted in the Linked List
+   */
+  deleteTail(): LinkedListNode|null {
+    const deletedTail = this.tail
+
+    if (this.head === this.tail) {
+      this.head = null
+      this.tail = null
+
+      return deletedTail
+    }
+
+    let currentNode = this.head
+
+    while(!!currentNode!.next) {
+      if (!currentNode!.next!.next) {
+        currentNode!.next = null
+      } else {
+        currentNode = currentNode!.next
+      }
+    }
+
+    this.tail = currentNode
+    return deletedTail
+
   }
 
   /**
