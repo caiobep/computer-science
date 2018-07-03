@@ -231,6 +231,14 @@ export class LinkedList {
   }
 
   /**
+   * Transforms the Linked List into a string
+   * @param callback A callback function to transform the string value
+   */
+  toString(callback?: (a:any) => any): string {
+    return this.toArray().map(i => i.toString(callback)).toString()
+  }
+
+  /**
    * Initializes a list
    * @param element Element to initialize the list
    */
