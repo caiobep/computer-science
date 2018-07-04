@@ -135,4 +135,24 @@ describe('Linked List', () => {
     )).to.eql(null)
   })
 
+  it('Should be able to convert itself into a string', () => {
+    const linkedList = new LinkedList()
+      .append(1)
+      .append(2)
+
+    expect(linkedList.toString()).to.be.eql('1,2')
+
+    const objLinkedList = new LinkedList()
+
+    objLinkedList
+      .append({ key: 'key1', value: 'value1' })
+      .append({ key: 'key2', value: 'value2' })
+
+    const stringifyer = (value: any) => `${value.key}:${value.value}`
+
+    expect(
+      objLinkedList.toString(stringifyer)
+    ).to.be.eql('key1:value1,key2:value2')
+  })
+
 })

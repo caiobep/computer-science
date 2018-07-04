@@ -15,6 +15,7 @@ export class LinkedList {
     this.tail = null
 
     this.compare = new Comparator(comparatorFunction)
+    return this
   }
 
   /**
@@ -234,8 +235,11 @@ export class LinkedList {
    * Transforms the Linked List into a string
    * @param callback A callback function to transform the string value
    */
-  toString(callback?: (a:any) => any): string {
-    return this.toArray().map(i => i.toString(callback)).toString()
+  toString(callback?: (a:any) => string): string {
+    if (!!callback) {
+      return this.toArray().map(callback).toString()
+    }
+    return this.toArray().toString()
   }
 
   /**
